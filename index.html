@@ -63,6 +63,7 @@
       <button type="submit" id="send-button">Poslat</button>
     </form>
   </body>
+
   <script>
     const socket = io();
 
@@ -90,13 +91,19 @@
       e.preventDefault();
       console.log(messageInput.value);
       const message = messageInput.value;
-      appendMessage(`Vy: ${message}`);
+      appendMessage(`Vy: ${message}`, true);
       socket.emit("poslal-zpravu", message);
       messageInput.value = "";
     });
 
-    function appendMessage(message) {
+    function appendMessage(message, user) {
       const messageElement = document.createElement("div");
+
+      if (user) {
+        messageElement.classList.add("message-me");
+      } else {
+        messageElement.classList.add("message-other");
+      }
       messageElement.innerText = message;
       messageContainer.append(messageElement);
     }
