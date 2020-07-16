@@ -6,7 +6,7 @@ var io = require("socket.io")(http);
 
 const users = {};
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "index.html");
 });
 
 io.on("connection", (socket) => {
