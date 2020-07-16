@@ -7,6 +7,10 @@
     "devStart": "nodemon server.js",
     "start": "node server.js"
   },
+  "engines": {
+    "node": "12.18.2",
+    "npm": "6.14.5"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
