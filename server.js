@@ -2,15 +2,14 @@ const PORT = process.env.PORT || 3000;
 
 var app = require("express")();
 var http = require("http").createServer(app);
-/* var io = require("socket.io")(http);
+var io = require("socket.io")(http);
 
-const users = {}; */
+const users = {};
 app.get("/", (req, res) => {
-  res.send("hellp");
-  // res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/index.html");
 });
 
-/* io.on("connection", (socket) => {
+io.on("connection", (socket) => {
   socket.on("novy-uzivatel", (name) => {
     users[socket.id] = name;
     socket.broadcast.emit("uzivatel-prihlasen", name);
@@ -26,7 +25,7 @@ app.get("/", (req, res) => {
     delete users[socket.id];
   });
 });
- */
+
 http.listen(PORT, () => {
   console.log("Poslouchám na portu 3000");
 });
