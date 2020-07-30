@@ -1,111 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:100"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * {
+      padding: 0 0 0 0;
+      margin: 0 0 0 0;
+      box-sizing: border-box;
+      outline: none;
+    }
+    body {
+      background-color: #f5f5f5;
+      color: black;
+      font-size: 14px;
+      font-family: Helvetica Neue, Helvetica, Arial;
+    }
+
+    section.wrapper {
+      width: 840px;
+      margin: 60px auto;
+    }
+    section.wrapper div.background {
+      background-color: white;
+      border-radius: 2px;
+      float: left;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    }
+    section.wrapper h1 {
+      font-family: Roboto;
+      width: 100%;
+      float: left;
+      height: 200px;
+      line-height: 250px;
+      text-align: center;
+      font-size: 60px;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      color: white;
+      background-color: #4aa3df;
+    }
+    section.wrapper article {
+      padding: 20px 20px 20px 20px;
+      float: left;
+      width: 100%;
+    }
+
+    label.label {
+      width: 100%;
+      float: left;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 10px 10px 10px;
+      text-align: left;
+      border-radius: 2px;
+      float: left;
+      border: 1px solid #dddddd;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .input:focus {
+      border-color: #0b97c4;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    textarea.input {
+      max-width: 100%;
+      min-height: 60px;
+      max-height: 120px;
+    }
+
+    button.button {
+      background-color: #0b97c4;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      padding: 10px 20px 10px 20px;
+      border: none;
+      float: right;
+      border-radius: 2px;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16),
+        0 2px 10px 0 rgba(0, 0, 0, 0.12);
+      transition: box-shadow 0.5s, background-color 0.5s;
+    }
+    button.button:hover {
+      background-color: #0bb9e7;
+      box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18),
+        0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .clear {
+      clear: both;
+    }
+
+    .messages {
+      width: 100%;
+      float: left;
+    }
+
+    .message {
+      width: 100%;
+      border-bottom: 1px solid #dddddd;
+      float: left;
+      margin-bottom: 25px;
+      margin-top: 25px;
+    }
+    .message:last-child {
+      margin-bottom: 0;
+    }
+    .message > .message-name {
+      font-family: Roboto;
+      font-weight: 600;
+    }
+    .message > .message-text {
+      padding-top: 5px;
+      word-break: break-all;
+      padding-bottom: 10px;
+    }
+    .message > .message-date {
+      float: right;
+    }
+    .message > .message-email {
+      float: left;
+    }
+  </style>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Chat App</title>
-    <script src="/socket.io/socket.io.js"></script>
-
-    <style>
-      body {
-        padding: 0;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        background-color: rgb(238, 237, 237);
-      }
-
-      #message-container {
-        width: 80%;
-        max-width: 1200px;
-      }
-
-      #message-container div {
-        padding: 10px;
-        border-radius: 30px;
-        margin-bottom: 2px;
-        font-family: Helvetica, Arial, sans-serif;
-      }
-
-      #send-container {
-        position: fixed;
-        padding-bottom: 30px;
-        bottom: 0;
-        background-color: white;
-        max-width: 1200px;
-        width: 80%;
-        display: flex;
-      }
-
-      #message-input {
-        flex-grow: 1;
-      }
-      .message-me {
-        background-color: rgb(74, 122, 255);
-        padding: 5px;
-        color: #fff;
-      }
-      .message-other {
-        padding: 20px;
-        border-radius: 30px;
-        margin-bottom: 2px;
-        font-family: Helvetica, Arial, sans-serif;
-        background-color: rgb(255, 255, 255);
-        color: rgb(0, 0, 0);
-      }
-    </style>
+    <title>Document</title>
   </head>
   <body>
-    <div id="message-container"></div>
-    <form id="send-container">
-      <input type="text" id="message-input" />
-      <button type="submit" id="send-button">Poslat</button>
-    </form>
-  </body>
+    <section class="wrapper">
+      <div class="background">
+        <h1>Realtime Kniha návštěv</h1>
+        <article class="form">
+          <form id="form">
+            <label class="label" for="form-name">Vaše jméno</label>
+            <input
+              class="input"
+              type="text"
+              id="form-name"
+              name="form_name"
+              placeholder="Vaše jméno (Patrik Smělý)/"
+            />
 
-  <script>
-    const socket = io();
+            <label class="label" for="form-email">Váš email</label>
+            <input
+              class="input"
+              type="email"
+              name="form_email"
+              id="form-email"
+              placeholder="Váš email (email@email.com)"
+            />
 
-    const messageContainer = document.getElementById("message-container");
-    const messageForm = document.getElementById("send-container");
-    const messageInput = document.getElementById("message-input");
+            <label class="label" for="form-text">Vaše zpráva</label>
+            <textarea
+              class="input"
+              name="form_text"
+              id="form-text"
+              placeholder="Vaše zpráva"
+            ></textarea>
 
-    const name = prompt("Jaké je vaše jméno?");
-    appendMessage("Jste se přihlásil");
-    socket.emit("novy-uzivatel", name);
+            <button
+              type="submit"
+              class="button"
+              id="form-action"
+              name="form_action"
+            >
+              Odeslat <i class="fa fa-arrow-circle-right"></i>
+            </button>
+          </form>
+        </article>
+        <article id="messages"></article>
+      </div>
+      <div class="clear"></div>
+    </section>
+    <script>
+      const socket = io();
 
-    socket.on("zprava", (data) => {
-      appendMessage(`${data.name}: ${data.message}`);
-    });
+      const messageContainer = document.getElementById("messages");
+      const messageForm = document.getElementById("form");
 
-    socket.on("uzivatel-prihlasen", (name) => {
-      appendMessage(`${name} přihlášen`);
-    });
+      const messageName = document.getElementById("form-name");
+      const messageEmail = document.getElementById("form-email");
+      const messageText = document.getElementById("form-text");
+      const name = prompt("Jaké je vaše jméno?");
+      appendMessage("Jste se přihlásil");
+      socket.emit("novy-uzivatel", name);
 
-    socket.on("uzivatel-odhlasen", (name) => {
-      appendMessage(`${name} se odhlásil`);
-    });
+      socket.on("zprava", (data) => {
+        appendMessages(data.message);
+      });
 
-    messageForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      console.log(messageInput.value);
-      const message = messageInput.value;
-      appendMessage(`Vy: ${message}`, true);
-      socket.emit("poslal-zpravu", message);
-      messageInput.value = "";
-    });
+      socket.on("uzivatel-prihlasen", (name) => {
+        appendMessage(`${name} přihlášen`);
+      });
 
-    function appendMessage(message, user) {
-      const messageElement = document.createElement("div");
+      socket.on("uzivatel-odhlasen", (name) => {
+        appendMessage(`${name} se odhlásil`);
+      });
 
-      if (user) {
-        messageElement.classList.add("message-me");
-      } else {
-        messageElement.classList.add("message-other");
+      messageForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        console.log(messageName.value);
+        const message = {
+          name: messageName.value,
+          email: messageEmail.value,
+          text: messageText.value,
+        };
+        console.log(message);
+        appendMessages(message);
+        socket.emit("poslal-zpravu", message);
+        messageName.value = "";
+      });
+
+      function appendMessages(message) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+        const nameH5 = document.createElement("h5");
+        const emailH5 = document.createElement("h5");
+        const textP = document.createElement("p");
+
+        console.log(message);
+        nameH5.innerText = message.name;
+        emailH5.innerText = message.email;
+        textP.innerText = message.text;
+
+        messageElement.append(nameH5);
+        messageElement.append(emailH5);
+        messageElement.append(textP);
+        //messageElement.innerText = message;
+        messageContainer.append(messageElement);
       }
-      messageElement.innerText = message;
-      messageContainer.append(messageElement);
-    }
-  </script>
+      function appendMessage(message, user) {
+        const messageElement = document.createElement("div");
+
+        messageElement.innerText = message;
+        messageContainer.append(messageElement);
+      }
+    </script>
+  </body>
 </html>

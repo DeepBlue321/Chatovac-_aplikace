@@ -17,7 +17,6 @@ io.on("connection", (socket) => {
   socket.on("poslal-zpravu", (message) => {
     socket.broadcast.emit("zprava", {
       message: message,
-      name: users[socket.id],
     });
   });
   socket.on("disconnect", () => {
